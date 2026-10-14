@@ -202,6 +202,7 @@ int main()
                 break;
             }
             cout << "5- Ativar/Desativar Conta" << endl;
+            cout << "teste";
 
             // Ativar/ Desativar conta
             if (contaAtiva == true)
