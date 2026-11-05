@@ -6,17 +6,20 @@ using namespace std;
 
 int main()
 {
+    const int max_contas = 100; // Limite máximo de 100 contas
 
-    int numeroConta, tipoConta, opcao;
-    string nomeCliente, cpf;
-    double saldo;
-    bool contaAtiva, contaCadastrada;
+    int numeroConta[max_contas];
+    int tipoConta[max_contas];
+    string nomeCliente[max_contas];
+    string cpf[max_contas];
+    double saldo[max_contas];
+    bool contaAtiva[max_contas];
+    bool contaCadastrada;
     char resposta, resposta2, resposta3;
+    int opcao;
 
-    numeroConta = 0;
-    tipoConta = 0;
-    saldo = 0;
-    contaAtiva = false;
+    int quantidadeContas = 0;
+
     contaCadastrada = false;
     opcao = 1;
 
@@ -40,61 +43,68 @@ int main()
         switch (opcao)
         {
         case 1:
+            if (quantidadeContas >= max_contas)
+            {
+                cout << "Limite máximo de contas atingido." << endl;
+                break;
+            }
             cout << "1- Cadastrar Conta" << endl;
 
             // Número da conta
             cout << "Número da conta: " << endl;
-            cin >> numeroConta;
+            cin >> numeroConta[quantidadeContas];
 
             // Validação: número da conta positivo
-            while (numeroConta <= 0)
+            while (numeroConta[quantidadeContas] <= 0)
             {
                 cout << "Número de conta inválido." << endl;
                 cout << "Digite novamente o número da conta: " << endl;
-                cin >> numeroConta;
+                cin >> numeroConta[quantidadeContas];
             }
 
             cin.ignore();
 
             // Nome do titular
             cout << "Nome do titular: " << endl;
-            getline(cin, nomeCliente);
+            getline(cin, nomeCliente[quantidadeContas]);
 
             // Número do CPF
             cout << "Número do CPF: " << endl;
-            cin >> cpf;
+            cin >> cpf[quantidadeContas];
 
             // Tipo da conta
             cout << "Tipo da conta: " << endl;
-            cin >> tipoConta;
+            cin >> tipoConta[quantidadeContas];
 
-            while (tipoConta != 1 && tipoConta != 2)
+            while (tipoConta[quantidadeContas] != 1 && tipoConta[quantidadeContas] != 2)
             {
                 cout << "Tipo de conta não existente" << endl;
-                cout << "Digite novamente o tipo da conta: " << endl;
-                cin >> tipoConta;
+                cout << "1- Conta Corrente" << endl;
+                cout << "2- Conta Poupança" << endl;
+                cout << "Escolha o tipo da conta: ";
+                cin >> tipoConta[quantidadeContas];
             }
 
-            if (tipoConta == 1)
+            if (tipoConta[quantidadeContas] == 1)
             {
                 cout << "1- Conta Corrente" << endl;
             }
 
-            else if (tipoConta == 2)
+            else if (tipoConta[quantidadeContas] == 2)
             {
                 cout << "2- Conta Poupança" << endl;
             }
 
             // Saldo inicial
             cout << "Saldo inicial: " << endl;
-            cin >> saldo;
+            cin >> saldo[quantidadeContas];
 
             // Validação: saldo positivo
-            while (saldo < 0)
+            while (saldo[quantidadeContas] < 0)
             {
                 cout << "O saldo inicial não pode ser negativo." << endl;
                 cout << "Digite novamente o saldo inicial: " << endl;
-                cin >> saldo;
+                cin >> saldo[quantidadeContas];
             }
 
             // Conta ativa
@@ -108,37 +118,72 @@ int main()
             }
             if (resposta == 'S' || resposta == 's')
             {
-                contaAtiva = true;
+                contaAtiva[quantidadeContas] = true;
                 cout << "Sua conta foi ativada." << endl;
             }
             else if (resposta == 'N' || resposta == 'n')
             {
-                contaAtiva = false;
+                contaAtiva[quantidadeContas] = false;
                 cout << "Sua conta NÃO foi ativada." << endl;
             }
 
             contaCadastrada = true;
+
+            quantidadeContas++;
             break;
 
         case 2:
-            if (contaCadastrada == false)
+        {   
+            if (quantidadeContas == 0)
             {
                 cout << "É necessário cadastrar uma conta primeiro." << endl;
                 break;
             }
-            cout << "2- Consultar Conta" << endl;
 
-            // Tipo da conta
-            if (tipoConta == 1)
+            int contaBusca;
+            cout << "Digite o número da conta: ";
+            cin >> contaBusca;
+
+            for (int i = 0; i < quantidadeContas; i++)
             {
-                cout << "Sua conta é do tipo: Conta Corrente" << endl;
+                if (numeroConta[i] == contaBusca)
+                {
+                    cout << "Nome: " << nomeCliente[i] << endl;
+                    cout << "CPF: " << cpf[i] << endl;
+
+                    if (tipoConta[i] == 1)
+                    {
+                        cout << "Tipo: Conta Corrente" << endl;
+                    }
+                    else
+                    {
+                        cout << "Tipo: Conta Poupança" << endl;
+                    }
+
+                    cout << "Saldo: R$ " << saldo[i] << endl;
+
+                    cout << "Situação: ";
+                    if (contaAtiva[i] == true)
+                    {
+                        cout << "Ativa" << endl;
+                    }
+                    else
+                    {
+                        cout << "Desativada" << endl;
+                    }
+
+                    break;
+                }
+
+                if (i == quantidadeContas - 1)
+                {
+                    cout << "Conta não encontrada." << endl;
+                }
             }
-            else if (tipoConta == 2)
-            {
-                cout << "Sua conta é do tipo: Conta Poupança" << endl;
-            }
+
             break;
-
+            }
+            
         case 3:
             if (contaCadastrada == false)
             {
@@ -149,6 +194,7 @@ int main()
 
             // Verificação do saldo:
             cout << "Seu saldo é de: R$" << saldo << endl;
+
             break;
 
         case 4:
@@ -161,11 +207,11 @@ int main()
 
             // Alterar tipo de conta
             cout << "A sua conta atualmente é do tipo: ";
-            if (tipoConta == 1)
+            if (tipoConta[max_contas] == 1)
             {
                 cout << "1- Conta Corrente" << endl;
             }
-            else if (tipoConta == 2)
+            else if (tipoConta[max_contas] == 2)
             {
                 cout << "2- Conta Poupança" << endl;
             }
@@ -179,20 +225,21 @@ int main()
                 cin >> resposta2;
             }
 
-            if ((resposta2 == 'S' || resposta2 == 's') && tipoConta == 1)
+            if ((resposta2 == 'S' || resposta2 == 's') && tipoConta[max_contas] == 1)
             {
-                tipoConta = 2;
+                tipoConta[max_contas] = 2;
                 cout << "Tipo de conta alterado para: Conta Poupança";
             }
-            else if ((resposta2 == 'S' || resposta2 == 's') && tipoConta == 2)
+            else if ((resposta2 == 'S' || resposta2 == 's') && tipoConta[max_contas] == 2)
             {
-                tipoConta = 1;
+                tipoConta[max_contas] = 1;
                 cout << "Tipo de conta alterado para: Conta Corrente";
             }
             else if (resposta2 == 'N' || resposta2 == 'n')
             {
                 cout << "Tipo de conta NÃO alterado.";
             }
+
             break;
 
         case 5:
@@ -205,7 +252,7 @@ int main()
             cout << "teste";
 
             // Ativar/ Desativar conta
-            if (contaAtiva == true)
+            if (contaAtiva[max_contas] == true)
             {
                 cout << "Sua conta está ATIVA. Deseja desativá-la? (S/N)" << endl;
                 cin >> resposta3;
@@ -217,7 +264,7 @@ int main()
                 }
                 if (resposta3 == 'S' || resposta3 == 's')
                 {
-                    contaAtiva = false;
+                    contaAtiva[max_contas] = false;
                     cout << "Sua conta foi DESATIVADA" << endl;
                 }
                 else
@@ -226,13 +273,13 @@ int main()
                 }
             }
 
-            else if (contaAtiva == false)
+            else if (contaAtiva[max_contas] == false)
             {
                 cout << "Sua conta está DESATIVADA. Deseja ativá-la? (S/N)" << endl;
                 cin >> resposta3;
                 if (resposta3 == 'S' || resposta3 == 's')
                 {
-                    contaAtiva = true;
+                    contaAtiva[max_contas] = true;
                     cout << "Sua conta foi ATIVADA" << endl;
                 }
                 else
@@ -241,6 +288,7 @@ int main()
                     cout << "Nenhuma alteração foi feita" << endl;
                 }
             }
+
             break;
 
         case 6:
