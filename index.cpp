@@ -14,27 +14,36 @@ int main()
     string cpf[max_contas];
     double saldo[max_contas];
     bool contaAtiva[max_contas];
-    bool contaCadastrada;
-    char resposta, resposta2, resposta3;
+    char resposta;
     int opcao;
 
     int quantidadeContas = 0;
 
-    contaCadastrada = false;
+    const int max_movimentacoes = 500;
+
+    // Variáveis utilizadas no case 4
+    int contaMovimentacao[max_movimentacoes];
+    char tipoMovimentacao[max_movimentacoes];
+    double valorMovimentacao[max_movimentacoes];
+
+    int quantidadeMovimentacoes = 0;
+
     opcao = 1;
 
-    while (opcao != 6)
+    while (opcao != 8)
     {
         // Menu
         cout << "*******************" << endl;
         cout << "*** BANCO SWIFT ***" << endl;
         cout << "*******************" << endl;
         cout << "1- Cadastrar Conta" << endl;
-        cout << "2- Consultar Conta" << endl;
-        cout << "3- Verificar Saldo" << endl;
-        cout << "4- Alterar tipo de Conta" << endl;
-        cout << "5- Ativar/Desativar Conta" << endl;
-        cout << "6- Sair" << endl;
+        cout << "2- Listar Contas" << endl;
+        cout << "3- Consultar Conta" << endl;
+        cout << "4- Realizar Depósitos" << endl;
+        cout << "5- Realizar Saques" << endl;
+        cout << "6- Realizar Transferências" << endl;
+        cout << "7- Exibir Extrato" << endl;
+        cout << "8- Sair" << endl;
 
         // Cliente escolhe uma opção do Menu
         cout << "Escolha uma opção: " << endl;
@@ -43,6 +52,7 @@ int main()
         switch (opcao)
         {
         case 1:
+        {
             if (quantidadeContas >= max_contas)
             {
                 cout << "Limite máximo de contas atingido." << endl;
@@ -61,7 +71,22 @@ int main()
                 cout << "Digite novamente o número da conta: " << endl;
                 cin >> numeroConta[quantidadeContas];
             }
+            bool numeroExistente = false;
 
+            for (int i = 0; i < quantidadeContas; i++)
+            {
+                if (numeroConta[i] == numeroConta[quantidadeContas])
+                {
+                    numeroExistente = true;
+                    break;
+                }
+            }
+
+            if (numeroExistente == true)
+            {
+                cout << "Este número de conta já está cadastrado." << endl;
+                break;
+            }
             cin.ignore();
 
             // Nome do titular
@@ -127,13 +152,45 @@ int main()
                 cout << "Sua conta NÃO foi ativada." << endl;
             }
 
-            contaCadastrada = true;
-
             quantidadeContas++;
             break;
-
+        }
         case 2:
-        {   
+        {
+            cout << "2- Listar Contas Cadastradas" << endl;
+
+            if (quantidadeContas == 0)
+            {
+                cout << "Nenhuma conta cadastrada." << endl;
+                break;
+            }
+
+            for (int i = 0; i < quantidadeContas; i++)
+            {
+                cout << "\n--------------------------------" << endl;
+                cout << "Conta: " << numeroConta[i] << endl;
+                cout << "Nome do cliente: " << nomeCliente[i] << endl;
+                cout << "CPF: " << cpf[i] << endl;
+                cout << "Tipo da conta: " << tipoConta[i] << endl;
+                cout << "Saldo: R$ " << saldo[i] << endl;
+
+                if (contaAtiva[i] == true)
+                {
+                    cout << "Status: Ativa" << endl;
+                }
+                else
+                {
+                    cout << "Status: Desativada" << endl;
+                }
+            }
+
+            cout << "--------------------------------" << endl;
+
+            break;
+        }
+
+        case 3:
+        {
             if (quantidadeContas == 0)
             {
                 cout << "É necessário cadastrar uma conta primeiro." << endl;
@@ -141,7 +198,7 @@ int main()
             }
 
             int contaBusca;
-            cout << "Digite o número da conta: ";
+            cout << "Digite o número da conta que deseja consultar: ";
             cin >> contaBusca;
 
             for (int i = 0; i < quantidadeContas; i++)
@@ -182,123 +239,325 @@ int main()
             }
 
             break;
-            }
-            
-        case 3:
-            if (contaCadastrada == false)
-            {
-                cout << "É necessário cadastrar uma conta primeiro." << endl;
-                break;
-            }
-            cout << "3- Verificar Saldo" << endl;
-
-            // Verificação do saldo:
-            cout << "Seu saldo é de: R$" << saldo << endl;
-
-            break;
-
+        }
         case 4:
-            if (contaCadastrada == false)
+        {
+            if (quantidadeContas == 0)
             {
                 cout << "É necessário cadastrar uma conta primeiro." << endl;
                 break;
             }
-            cout << "4- Alterar tipo de Conta" << endl;
 
-            // Alterar tipo de conta
-            cout << "A sua conta atualmente é do tipo: ";
-            if (tipoConta[max_contas] == 1)
-            {
-                cout << "1- Conta Corrente" << endl;
-            }
-            else if (tipoConta[max_contas] == 2)
-            {
-                cout << "2- Conta Poupança" << endl;
-            }
+            cout << "4- Realizar Depósito" << endl;
 
-            cout << "Deseja alterar o tipo da sua conta? (S/N)" << endl;
-            cin >> resposta2;
-            while (resposta2 != 'S' && resposta2 != 's' &&
-                   resposta2 != 'N' && resposta2 != 'n')
-            {
-                cout << "Resposta inválida. Digite S ou N: ";
-                cin >> resposta2;
-            }
+            int contaBusca;
+            double valor;
 
-            if ((resposta2 == 'S' || resposta2 == 's') && tipoConta[max_contas] == 1)
+            cout << "Digite o número da conta: ";
+            cin >> contaBusca;
+
+            for (int i = 0; i < quantidadeContas; i++)
             {
-                tipoConta[max_contas] = 2;
-                cout << "Tipo de conta alterado para: Conta Poupança";
-            }
-            else if ((resposta2 == 'S' || resposta2 == 's') && tipoConta[max_contas] == 2)
-            {
-                tipoConta[max_contas] = 1;
-                cout << "Tipo de conta alterado para: Conta Corrente";
-            }
-            else if (resposta2 == 'N' || resposta2 == 'n')
-            {
-                cout << "Tipo de conta NÃO alterado.";
+                if (numeroConta[i] == contaBusca)
+                {
+                    if (contaAtiva[i] == false)
+                    {
+                        cout << "Esta conta está desativada. Não é possível realizar depósitos." << endl;
+                        break;
+                    }
+                    if (quantidadeMovimentacoes >= max_movimentacoes)
+                    {
+                        cout << "Limite de movimentações atingido." << endl;
+                        break;
+                    }
+                    cout << "Digite o valor do depósito: R$ ";
+                    cin >> valor;
+
+                    while (valor <= 0)
+                    {
+                        cout << "Valor inválido. Digite um valor positivo: R$ ";
+                        cin >> valor;
+                    }
+
+                    saldo[i] = saldo[i] + valor;
+
+                    cout << "Depósito realizado com sucesso!" << endl;
+                    cout << "Novo saldo: R$ " << saldo[i] << endl;
+
+                    contaMovimentacao[quantidadeMovimentacoes] = numeroConta[i];
+                    tipoMovimentacao[quantidadeMovimentacoes] = 'D';
+                    valorMovimentacao[quantidadeMovimentacoes] = valor;
+
+                    quantidadeMovimentacoes++;
+
+                    break;
+                }
+
+                if (i == quantidadeContas - 1)
+                {
+                    cout << "Conta não encontrada." << endl;
+                }
             }
 
             break;
-
+        }
         case 5:
-            if (contaCadastrada == false)
+        {
+            if (quantidadeContas == 0)
             {
                 cout << "É necessário cadastrar uma conta primeiro." << endl;
                 break;
             }
-            cout << "5- Ativar/Desativar Conta" << endl;
-            cout << "teste";
 
-            // Ativar/ Desativar conta
-            if (contaAtiva[max_contas] == true)
+            cout << "5- Realizar Saque" << endl;
+
+            int contaBusca;
+            double valor;
+
+            cout << "Digite o número da conta: ";
+            cin >> contaBusca;
+
+            for (int i = 0; i < quantidadeContas; i++)
             {
-                cout << "Sua conta está ATIVA. Deseja desativá-la? (S/N)" << endl;
-                cin >> resposta3;
-                while (resposta3 != 'S' && resposta3 != 's' &&
-                       resposta3 != 'N' && resposta3 != 'n')
+                if (numeroConta[i] == contaBusca)
                 {
-                    cout << "Resposta inválida. Digite S ou N: ";
-                    cin >> resposta3;
-                }
-                if (resposta3 == 'S' || resposta3 == 's')
-                {
-                    contaAtiva[max_contas] = false;
-                    cout << "Sua conta foi DESATIVADA" << endl;
-                }
-                else
-                {
-                    cout << "Nenhuma alteração foi feita" << endl;
-                }
-            }
+                    if (contaAtiva[i] == false)
+                    {
+                        cout << "Esta conta está desativada." << endl;
+                        break;
+                    }
 
-            else if (contaAtiva[max_contas] == false)
-            {
-                cout << "Sua conta está DESATIVADA. Deseja ativá-la? (S/N)" << endl;
-                cin >> resposta3;
-                if (resposta3 == 'S' || resposta3 == 's')
-                {
-                    contaAtiva[max_contas] = true;
-                    cout << "Sua conta foi ATIVADA" << endl;
-                }
-                else
-                {
+                    cout << "Digite o valor do saque: R$ ";
+                    cin >> valor;
 
-                    cout << "Nenhuma alteração foi feita" << endl;
+                    while (valor <= 0)
+                    {
+                        cout << "Valor inválido. Digite um valor positivo: R$ ";
+                        cin >> valor;
+                    }
+
+                    if (valor > saldo[i])
+                    {
+                        cout << "Saldo insuficiente para realizar o saque." << endl;
+                        break;
+                    }
+
+                    if (quantidadeMovimentacoes >= max_movimentacoes)
+                    {
+                        cout << "Limite de movimentações atingido." << endl;
+                        break;
+                    }
+
+                    saldo[i] = saldo[i] - valor;
+
+                    cout << "Saque realizado com sucesso!" << endl;
+                    cout << "Novo saldo: R$ " << saldo[i] << endl;
+
+                    // Registro da movimentação
+                    contaMovimentacao[quantidadeMovimentacoes] = numeroConta[i];
+                    tipoMovimentacao[quantidadeMovimentacoes] = 'S';
+                    valorMovimentacao[quantidadeMovimentacoes] = valor;
+
+                    quantidadeMovimentacoes++;
+
+                    break;
+                }
+
+                if (i == quantidadeContas - 1)
+                {
+                    cout << "Conta não encontrada." << endl;
                 }
             }
 
             break;
+        }
 
         case 6:
-            cout << "6- Sair" << endl;
-            break;
+        {
+            if (quantidadeContas < 2)
+            {
+                cout << "É necessário ter pelo menos duas contas cadastradas." << endl;
+                break;
+            }
 
+            cout << "6- Realizar Transferência" << endl;
+
+            int contaOrigem, contaDestino;
+            int indiceOrigem = -1;
+            int indiceDestino = -1;
+            double valor;
+
+            cout << "Digite o número da conta de origem: ";
+            cin >> contaOrigem;
+
+            cout << "Digite o número da conta de destino: ";
+            cin >> contaDestino;
+
+            // Procurar as duas contas
+            for (int i = 0; i < quantidadeContas; i++)
+            {
+                if (numeroConta[i] == contaOrigem)
+                {
+                    indiceOrigem = i;
+                }
+
+                if (numeroConta[i] == contaDestino)
+                {
+                    indiceDestino = i;
+                }
+            }
+
+            // Verificar se as contas existem
+            if (indiceOrigem == -1 || indiceDestino == -1)
+            {
+                cout << "Uma ou ambas as contas não foram encontradas." << endl;
+                break;
+            }
+
+            // Verificar se são contas diferentes
+            if (indiceOrigem == indiceDestino)
+            {
+                cout << "Não é possível transferir para a mesma conta." << endl;
+                break;
+            }
+
+            // Verificar se as contas estão ativas
+            if (contaAtiva[indiceOrigem] == false || contaAtiva[indiceDestino] == false)
+            {
+                cout << "As duas contas precisam estar ativas para realizar a transferência." << endl;
+                break;
+            }
+
+            cout << "Digite o valor da transferência: R$ ";
+            cin >> valor;
+
+            while (valor <= 0)
+            {
+                cout << "Valor inválido. Digite um valor positivo: R$ ";
+                cin >> valor;
+            }
+
+            // Verificar saldo da conta de origem
+            if (valor > saldo[indiceOrigem])
+            {
+                cout << "Saldo insuficiente para realizar a transferência." << endl;
+                break;
+            }
+
+            // A transferência gera duas movimentações
+            if (quantidadeMovimentacoes + 2 > max_movimentacoes)
+            {
+                cout << "Limite de movimentações atingido." << endl;
+                break;
+            }
+
+            // Atualizar os saldos
+            saldo[indiceOrigem] = saldo[indiceOrigem] - valor;
+            saldo[indiceDestino] = saldo[indiceDestino] + valor;
+
+            // Registrar saída na conta de origem
+            contaMovimentacao[quantidadeMovimentacoes] = numeroConta[indiceOrigem];
+            tipoMovimentacao[quantidadeMovimentacoes] = 'S';
+            valorMovimentacao[quantidadeMovimentacoes] = valor;
+            quantidadeMovimentacoes++;
+
+            // Registrar entrada na conta de destino
+            contaMovimentacao[quantidadeMovimentacoes] = numeroConta[indiceDestino];
+            tipoMovimentacao[quantidadeMovimentacoes] = 'D';
+            valorMovimentacao[quantidadeMovimentacoes] = valor;
+            quantidadeMovimentacoes++;
+
+            cout << "Transferência realizada com sucesso!" << endl;
+            cout << "Novo saldo da conta de origem: R$ " << saldo[indiceOrigem] << endl;
+            cout << "Novo saldo da conta de destino: R$ " << saldo[indiceDestino] << endl;
+
+            break;
+        }
+        case 7:
+        {
+            if (quantidadeContas == 0)
+            {
+                cout << "É necessário cadastrar uma conta primeiro." << endl;
+                break;
+            }
+
+            cout << "7- Consultar Extrato" << endl;
+
+            int contaBusca;
+            bool encontrouConta = false;
+            bool encontrouMovimentacao = false;
+
+            cout << "Digite o número da conta: ";
+            cin >> contaBusca;
+
+            // Verificar se a conta existe
+            for (int i = 0; i < quantidadeContas; i++)
+            {
+                if (numeroConta[i] == contaBusca)
+                {
+                    encontrouConta = true;
+                    break;
+                }
+            }
+
+            if (encontrouConta == false)
+            {
+                cout << "Conta não encontrada." << endl;
+                break;
+            }
+
+            cout << "\nExtrato da conta " << contaBusca << endl;
+            cout << "--------------------------------" << endl;
+
+            // Percorrer o histórico de movimentações
+            for (int i = 0; i < quantidadeMovimentacoes; i++)
+            {
+                if (contaMovimentacao[i] == contaBusca)
+                {
+                    encontrouMovimentacao = true;
+
+                    if (tipoMovimentacao[i] == 'D')
+                    {
+                        cout << "Depósito: + R$ " << valorMovimentacao[i] << endl;
+                    }
+                    else if (tipoMovimentacao[i] == 'S')
+                    {
+                        cout << "Saque/Transferência: - R$ " << valorMovimentacao[i] << endl;
+                    }
+                }
+            }
+
+            if (encontrouMovimentacao == false)
+            {
+                cout << "Nenhuma movimentação encontrada para esta conta." << endl;
+            }
+
+            cout << "--------------------------------" << endl;
+
+            // Mostrar saldo atual
+            for (int i = 0; i < quantidadeContas; i++)
+            {
+                if (numeroConta[i] == contaBusca)
+                {
+                    cout << "Saldo atual: R$ " << saldo[i] << endl;
+                    break;
+                }
+            }
+
+            break;
+        }
+        case 8:
+        {
+            cout << "Encerrando o sistema BANCO SWIFT..." << endl;
+            cout << "Obrigado por utilizar nossos serviços!" << endl;
+            break;
+        }
         default:
-            cout << "Opção inválida" << endl;
+        {
+            cout << "Opção inválida. Escolha uma opção entre 1 e 8." << endl;
+            break;
+        }
         }
     }
-
     return 0;
 }
